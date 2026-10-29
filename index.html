@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WARRIER Enterprise | Asset Warranty &amp; Financial Obligation Governance</title>
+  <meta name="description" content="Institutional warranty lifecycle management, verified bill vault, facility-based payment obligation scheduling, and proactive late fee mitigation platform.">
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css?v=3.1">
+</head>
+<body>
+
+  <!-- Top Enterprise Status & Compliance Strip -->
+  <div class="top-utility-strip">
+    <div class="top-utility-content">
+      <div class="utility-left">
+        <span class="status-indicator-live"><span class="status-dot"></span> System Operational</span>
+        <span>Local Encrypted Vault Active</span>
+        <span>Portfolio: Global Corporate Treasury</span>
+      </div>
+      <div class="utility-right">
+        <span><i class="fa-solid fa-lock"></i> AES-256 Client Isolation</span>
+        <span>ISO-Compliant Asset Governance</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <a href="#" class="brand" onclick="switchPage('page-warranties'); return false;">
+        <div class="brand-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="brand-info">
+          <div class="brand-title-wrap">
+            <h1>WARRIER</h1>
+            <span class="org-tag">Enterprise</span>
+          </div>
+          <span>Asset Warranty Governance &amp; Payment Obligations</span>
+        </div>
+      </a>
+
+      <!-- Page Switching Tabs -->
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" data-target="page-warranties" id="tab-btn-warranties">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <span>Warranty Vault</span>
+        </button>
+        <button class="nav-tab-btn" data-target="page-payments" id="tab-btn-payments">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Payment Dues &amp; EMIs</span>
+        </button>
+        <button class="nav-tab-btn" data-target="page-analytics" id="tab-btn-analytics">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Treasury Analytics</span>
+        </button>
+      </nav>
+
+      <!-- Action & Setting Controls -->
+      <div class="nav-actions">
+        <!-- Currency Select -->
+        <select id="currency-selector" class="currency-select" title="Change Currency">
+          <option value="$">$ USD</option>
+          <option value="₹">₹ INR</option>
+          <option value="€">€ EUR</option>
+          <option value="£">£ GBP</option>
+        </select>
+
+        <!-- Financial & Standard Calculator -->
+        <button class="btn-icon" id="btn-open-calculator" title="Financial &amp; Arithmetic Calculator">
+          <i class="fa-solid fa-calculator"></i>
+        </button>
+
+        <!-- Notification Bell -->
+        <button class="btn-icon" id="btn-nav-notif" title="Urgent Reminders & Expiry Alerts">
+          <i class="fa-regular fa-bell"></i>
+          <span class="badge-dot" id="nav-notif-dot"></span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button class="btn-icon" id="btn-toggle-theme" title="Toggle Light / Dark Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- Quick Add Bill Button -->
+        <button class="btn-primary" id="btn-open-warranty-modal">
+          <i class="fa-solid fa-plus"></i>
+          <span>Record Asset Bill</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Expiry & Late Fee Prevention Alert Banner -->
+    <div id="top-alert-banner" class="alert-banner" style="display: none;">
+      <div class="alert-content">
+        <div class="alert-icon-wrap">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div class="alert-text">
+          <h3 class="alert-title">Early Warranty Expiry &amp; Late Fee Reminder</h3>
+          <p class="alert-desc">You have upcoming items requiring attention before late fees or warranty expirations occur.</p>
+        </div>
+      </div>
+      <div class="alert-actions">
+        <button class="btn-alert" onclick="document.getElementById('btn-nav-notif').click()">View Details</button>
+        <button class="btn-close-alert" onclick="document.getElementById('top-alert-banner').style.display='none'" title="Dismiss">&times;</button>
+      </div>
+    </div>
+
+    <!-- Executive KPI Summary Cards -->
+    <section class="stats-grid">
+      <div class="stat-card" style="--stat-accent: #2563eb; --stat-bg: rgba(37, 99, 235, 0.12);">
+        <div class="stat-card-stripe"></div>
+        <div class="stat-card-top">
+          <div class="stat-details">
+            <h4>Active Covered Assets</h4>
+          </div>
+          <div class="stat-mini-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="stat-warranty-value-total">$0.00</div>
+        <div class="stat-subtext"><i class="fa-solid fa-circle-check" style="color: #34d399;"></i> Audited valuation protected</div>
+      </div>
+
+      <div class="stat-card" id="stat-card-expiry-horizon" style="--stat-accent: #ffffff; --stat-bg: #ffffff;">
+        <div class="stat-card-stripe" id="stat-card-expiry-stripe"></div>
+        <div class="stat-card-top">
+          <div class="stat-details">
+            <h4 id="stat-expiry-horizon-title">Expiry Horizon (60 Days)</h4>
+          </div>
+          <div class="stat-mini-icon" id="stat-expiry-horizon-icon" style="background: #ffffff; border: 1px solid var(--border-medium); color: var(--text-primary);">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="stat-expiring-soon-val">0 Items</div>
+        <div class="stat-subtext" id="stat-expiring-soon-sub"><i class="fa-solid fa-circle-check"></i> No immediate expirations (60d)</div>
+      </div>
+
+      <div class="stat-card" style="--stat-accent: #0284c7; --stat-bg: rgba(2, 132, 199, 0.12);">
+        <div class="stat-card-stripe"></div>
+        <div class="stat-card-top">
+          <div class="stat-details">
+            <h4>Scheduled Obligations</h4>
+          </div>
+          <div class="stat-mini-icon">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="stat-upcoming-dues-total">$0.00</div>
+        <div class="stat-subtext"><i class="fa-solid fa-receipt"></i> Monthly rent, utilities &amp; EMIs</div>
+      </div>
+
+      <div class="stat-card" style="--stat-accent: #ffffff; --stat-bg: #ffffff;">
+        <div class="stat-card-stripe"></div>
+        <div class="stat-card-top">
+          <div class="stat-details">
+            <h4>Late Fee Exposure Avoided</h4>
+          </div>
+          <div class="stat-mini-icon" style="background: #ffffff; border: 1px solid var(--border-medium); color: var(--text-primary);">
+            <i class="fa-solid fa-coins"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="analytics-late-fee-saved">$0.00</div>
+        <div class="stat-subtext"><i class="fa-solid fa-arrow-trend-up"></i> Protected via proactive alerts</div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         PAGE 1: Warranty Products & Bill Photos Tracker
+         ==================================================================== -->
+    <main id="page-warranties" class="page-view">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Product Warranties &amp; Bill Vault</h2>
+          <span class="section-badge" id="warranty-count-badge">Loading...</span>
+        </div>
+
+        <div class="controls-row">
+          <!-- Search -->
+          <div class="search-input-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="warranty-search" class="search-input" placeholder="Search by product, store or bill...">
+          </div>
+
+          <!-- Status Filter -->
+          <select id="warranty-status-filter" class="filter-select">
+            <option value="all">All Warranties</option>
+            <option value="expired">⚫ Expired Warranties</option>
+            <option value="safe">🟢 Active &amp; Safe (&gt; 2 Months)</option>
+            <option value="warning">🔴 Expiring Soon (1-2 Months Alert)</option>
+          </select>
+
+          <!-- Add Product Button -->
+          <button class="btn-primary" onclick="openWarrantyModal()">
+            <i class="fa-solid fa-plus"></i> Add Product Bill
+          </button>
+        </div>
+      </div>
+
+      <!-- Warranty Cards Grid -->
+      <div class="warranty-grid" id="warranty-cards-container">
+        <!-- Rendered dynamically by js/warranty.js -->
+      </div>
+    </main>
+
+    <!-- ====================================================================
+         PAGE 2: Payment Modes & EMI / Recurring Bills Hub
+         ==================================================================== -->
+    <main id="page-payments" class="page-view" style="display: none;">
+      
+      <!-- Four Payment Facilities Highlight Bar -->
+      <div class="payment-modes-bar">
+        <!-- 1. Direct Cash -->
+        <div class="payment-mode-pill active" data-mode="direct_cash" onclick="filterByMode('direct_cash')" style="--mode-color: #10b981; --mode-bg: rgba(16, 185, 129, 0.15);">
+          <div class="mode-pill-header">
+            <div class="mode-title">
+              <i class="fa-solid fa-money-bill-wave" style="color: #10b981;"></i>
+              <span>Cash &amp; Direct Settlements</span>
+            </div>
+            <span class="mode-badge">Liquidity</span>
+          </div>
+          <div class="mode-amount" id="stat-mode-cash">$0.00</div>
+          <div class="mode-count" id="stat-count-cash">Rent &amp; Direct Settlements</div>
+        </div>
+
+        <!-- 2. Credit Card / Debit Card -->
+        <div class="payment-mode-pill" data-mode="credit_debit_card" onclick="filterByMode('credit_debit_card')" style="--mode-color: #3b82f6; --mode-bg: rgba(59, 130, 246, 0.15);">
+          <div class="mode-pill-header">
+            <div class="mode-title">
+              <i class="fa-solid fa-credit-card" style="color: #3b82f6;"></i>
+              <span>Commercial Card Facilities</span>
+            </div>
+            <span class="mode-badge">Card Lines</span>
+          </div>
+          <div class="mode-amount" id="stat-mode-card">$0.00</div>
+          <div class="mode-count" id="stat-count-card">Corporate &amp; Personal Cards</div>
+        </div>
+
+        <!-- 3. Loan / EMI -->
+        <div class="payment-mode-pill" data-mode="loan_emi" onclick="filterByMode('loan_emi')" style="--mode-color: #8b5cf6; --mode-bg: rgba(139, 92, 246, 0.15);">
+          <div class="mode-pill-header">
+            <div class="mode-title">
+              <i class="fa-solid fa-landmark" style="color: #8b5cf6;"></i>
+              <span>Term Loans &amp; Bank Financing</span>
+            </div>
+            <span class="mode-badge">Bank Facility</span>
+          </div>
+          <div class="mode-amount" id="stat-mode-loan">$0.00</div>
+          <div class="mode-count" id="stat-count-loan">Auto, Personal &amp; Commercial Loans</div>
+        </div>
+
+        <!-- 4. Credit Card EMI -->
+        <div class="payment-mode-pill" data-mode="credit_card_emi" onclick="filterByMode('credit_card_emi')" style="--mode-color: #f97316; --mode-bg: rgba(249, 115, 22, 0.15);">
+          <div class="mode-pill-header">
+            <div class="mode-title">
+              <i class="fa-solid fa-bolt" style="color: #f97316;"></i>
+              <span>Structured EMI Lines</span>
+            </div>
+            <span class="mode-badge">Installments</span>
+          </div>
+          <div class="mode-amount" id="stat-mode-ccemi">$0.00</div>
+          <div class="mode-count" id="stat-count-ccemi">Active Tenure Installments</div>
+        </div>
+      </div>
+
+      <!-- Section Header & Filters -->
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Obligation Ledger &amp; Recurring Schedules</h2>
+          <span class="section-badge" style="background: rgba(16, 185, 129, 0.12); color: #34d399; border-color: rgba(16, 185, 129, 0.25);">
+            <i class="fa-solid fa-shield-halved"></i> Late Fee Mitigation Active
+          </span>
+        </div>
+
+        <div class="controls-row">
+          <!-- Filter by Payment Mode -->
+          <select id="payment-mode-filter" class="filter-select">
+            <option value="all">All Settlement Modes</option>
+            <option value="direct_cash">Cash &amp; Direct Settlements</option>
+            <option value="credit_debit_card">Commercial Card Facilities</option>
+            <option value="loan_emi">Term Loans &amp; Financing</option>
+            <option value="credit_card_emi">Structured EMI Lines</option>
+          </select>
+
+          <!-- Filter by Category -->
+          <select id="payment-cat-filter" class="filter-select">
+            <option value="all">All Bill Categories</option>
+            <option value="Rent">Rent Payments</option>
+            <option value="Electricity">Electricity Bills</option>
+            <option value="Credit Card EMI">Credit Card EMI</option>
+            <option value="Loan EMI">Loan EMI</option>
+            <option value="Product Purchases">Product Purchases Bills</option>
+          </select>
+
+          <!-- Filter by Status -->
+          <select id="payment-status-filter" class="filter-select">
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending Payments</option>
+            <option value="urgent">Due Soon / Overdue (Alerts)</option>
+            <option value="paid">Settled / Paid</option>
+          </select>
+
+          <!-- Open EMI Calculator -->
+          <button type="button" class="btn-secondary" onclick="window.openCalculatorModal('emi')">
+            <i class="fa-solid fa-calculator"></i> EMI Calculator
+          </button>
+
+          <!-- Add Payment Button -->
+          <button class="btn-primary" onclick="openPaymentModal()">
+            <i class="fa-solid fa-plus"></i> Add New Bill / EMI
+          </button>
+        </div>
+      </div>
+
+      <!-- Payment & EMI Items List Container -->
+      <div class="payments-container" id="payments-list-container">
+        <!-- Rendered dynamically by js/payments.js -->
+      </div>
+    </main>
+
+    <!-- ====================================================================
+         PAGE 3: Financial Overview & Late Fee Analytics
+         ==================================================================== -->
+    <main id="page-analytics" class="page-view" style="display: none;">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Unified Financial Intelligence &amp; Protection Overview</h2>
+        </div>
+        <div class="controls-row">
+          <button class="btn-secondary" id="btn-export-data">
+            <i class="fa-solid fa-download"></i> Export Data Backup
+          </button>
+          <button class="btn-secondary" id="btn-reset-demo" style="color: #fb7185;">
+            <i class="fa-solid fa-rotate-left"></i> Reset Demo Data
+          </button>
+        </div>
+      </div>
+
+      <div class="analytics-grid">
+        <!-- Payment Mode Breakdown -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3><i class="fa-solid fa-chart-column"></i> Expense Distribution by Payment Mode</h3>
+            <span style="font-size: 12px; color: var(--text-muted);">Current Billing Cycle</span>
+          </div>
+          <div class="bars-visual" id="analytics-mode-bars">
+            <!-- Dynamic bars -->
+          </div>
+        </div>
+
+        <!-- Warranty Coverage Health -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3><i class="fa-solid fa-shield-halved"></i> Warranty Protection Status</h3>
+          </div>
+          <div id="analytics-warr-summary">
+            <!-- Dynamic stats -->
+          </div>
+          <div style="margin-top: 24px; padding: 14px; background: rgba(99, 102, 241, 0.08); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+            <div style="font-size: 13px; font-weight: 700; color: #a5b4fc; margin-bottom: 4px;">
+              <i class="fa-solid fa-lightbulb"></i> Proactive Expiry Advice
+            </div>
+            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.4;">
+              Warranties expiring in 1-2 months should be checked for minor hardware glitches so you can book free brand service or panel replacements before expiration.
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Enterprise Compliance & Security Footer -->
+    <footer class="enterprise-footer">
+      <div class="footer-left">
+        <span class="footer-shield-badge">
+          <i class="fa-solid fa-shield-halved"></i> AES-256 Client Isolation Active
+        </span>
+        <span>WARRIER Enterprise Platform v2.8 &bull; Sovereign Local Financial Vault</span>
+      </div>
+      <div class="footer-links">
+        <button onclick="window.openCalculatorModal()">
+          <i class="fa-solid fa-calculator"></i> Financial Calculator
+        </button>
+        <button onclick="document.getElementById('btn-export-data').click()">
+          <i class="fa-solid fa-file-arrow-down"></i> Export Audit Ledger
+        </button>
+        <button onclick="document.getElementById('btn-reset-demo').click()">
+          <i class="fa-solid fa-arrow-rotate-right"></i> Reset Workspace Data
+        </button>
+        <span>&copy; 2026 WARRIER Enterprise Governance</span>
+      </div>
+    </footer>
+
+  </div><!-- end .app-container -->
+
+  <!-- ====================================================================
+       MODAL 1: Add Product Warranty & Upload Bill Photo
+       ==================================================================== -->
+  <div class="modal-backdrop" id="warranty-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-file-invoice"></i> Add New Product Warranty Bill</h3>
+        <button class="btn-close-modal" id="btn-close-warranty-modal">&times;</button>
+      </div>
+
+      <form id="warranty-form">
+        <div class="modal-body">
+          <!-- Photo of the Bill Upload Section -->
+          <div class="form-group">
+            <label><i class="fa-solid fa-camera"></i> 5. Photo of the Bill / Invoice *</label>
+            <input type="file" id="bill-photo-input" accept="image/*" style="display: none;">
+            
+            <div class="bill-upload-zone" id="bill-upload-zone">
+              <div class="upload-icon">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <div class="upload-text">Click to upload or drag &amp; drop bill photo</div>
+              <div class="upload-hint">Supports high-res JPG, PNG, WebP receipts from camera or gallery</div>
+            </div>
+
+            <!-- Preview Container -->
+            <div class="bill-preview-box" id="bill-preview-box">
+              <img id="preview-img" src="" alt="Bill preview">
+              <button type="button" class="btn-remove-preview" id="btn-remove-preview" title="Remove photo">&times;</button>
+            </div>
+
+            <!-- AI OCR Simulation Auto-Fill -->
+            <div class="ocr-assist-bar" id="ocr-assist-bar" style="display: none;">
+              <span><i class="fa-solid fa-wand-magic-sparkles"></i> Receipt detected! Auto-extract details?</span>
+              <button type="button" class="btn-ocr-auto" id="btn-ocr-auto">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Fill from Receipt
+              </button>
+            </div>
+          </div>
+
+          <!-- 1. Product Name -->
+          <div class="form-group">
+            <label for="warr-product-name"><i class="fa-solid fa-tag"></i> 1. Product Name *</label>
+            <input type="text" id="warr-product-name" class="form-control" placeholder="e.g. Apple MacBook Pro 14, Samsung TV, Sony Headphones" required>
+          </div>
+
+          <!-- 2. Store & Purchase Date (DD/MM/YYYY) -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="warr-store-name"><i class="fa-solid fa-store"></i> 2. Store Purchased From *</label>
+              <input type="text" id="warr-store-name" class="form-control" placeholder="e.g. Apex Electronics, Amazon, BestBuy" required>
+            </div>
+
+            <div class="form-group">
+              <label for="warr-purchase-date"><i class="fa-regular fa-calendar"></i> Purchase Date (DD/MM/YYYY) *</label>
+              <input type="text" id="warr-purchase-date" class="form-control" placeholder="DD/MM/YYYY (e.g. 15/04/2026)" required>
+            </div>
+          </div>
+
+          <!-- 3. Warranty & 4. Price -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="warr-val"><i class="fa-solid fa-clock-rotate-left"></i> 3. Warranty Period *</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="number" id="warr-val" class="form-control" placeholder="e.g. 12 or 2" min="1" required style="flex: 1;">
+                <select id="warr-unit" class="form-control" style="width: 110px;">
+                  <option value="months">Months</option>
+                  <option value="years">Years</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="warr-price"><i class="fa-solid fa-dollar-sign"></i> 4. Price of Product *</label>
+              <input type="number" id="warr-price" class="form-control" step="0.01" placeholder="e.g. 1999.00" required>
+            </div>
+          </div>
+
+          <!-- Real-Time Expiry Calculation Pill -->
+          <div id="form-expiry-preview" style="display:none; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; font-size: 12px; padding: 9px 12px; border-radius: var(--radius-sm);">
+          </div>
+
+          <!-- Category & Payment Mode Used -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="warr-category"><i class="fa-solid fa-shapes"></i> Category</label>
+              <select id="warr-category" class="form-control">
+                <option value="Computers & Laptops">Computers &amp; Laptops</option>
+                <option value="Home Appliances">Home Appliances</option>
+                <option value="Mobile Phones">Mobile Phones</option>
+                <option value="Audio & Wearables">Audio &amp; Wearables</option>
+                <option value="Cameras & Tech">Cameras &amp; Tech</option>
+                <option value="Other">Other Product</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="warr-payment-mode"><i class="fa-solid fa-credit-card"></i> Payment Mode Used</label>
+              <select id="warr-payment-mode" class="form-control">
+                <option value="credit_debit_card">Credit Card / Debit Card</option>
+                <option value="direct_cash">Direct Cash</option>
+                <option value="credit_card_emi">Credit Card EMI</option>
+                <option value="loan_emi">Loan / EMI</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group">
+            <label for="warr-notes"><i class="fa-regular fa-comment-dots"></i> Serial Number / Invoice Notes</label>
+            <input type="text" id="warr-notes" class="form-control" placeholder="e.g. Serial #SN-9948, 2-year AppleCare included">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btn-cancel-warranty">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-check"></i> Save Warranty &amp; Bill
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 2: Add New Payment / Bill / Rent / Electricity / EMI
+       ==================================================================== -->
+  <div class="modal-backdrop" id="payment-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-money-check-dollar"></i> Add Bill, Rent, Electricity or EMI</h3>
+        <button class="btn-close-modal" id="btn-close-payment-modal">&times;</button>
+      </div>
+
+      <form id="payment-form">
+        <div class="modal-body">
+          <!-- Title -->
+          <div class="form-group">
+            <label for="pay-title"><i class="fa-solid fa-pen"></i> Title / Description *</label>
+            <input type="text" id="pay-title" class="form-control" placeholder="e.g. Monthly Apartment Rent, Electricity Bill, Car Loan EMI" required>
+          </div>
+
+          <!-- Category & Payment Mode -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="pay-category"><i class="fa-solid fa-tag"></i> Bill Category *</label>
+              <select id="pay-category" class="form-control" required>
+                <option value="Rent">Rent Payment</option>
+                <option value="Electricity">Electricity Bill</option>
+                <option value="Credit Card EMI">Credit Card EMI</option>
+                <option value="Loan EMI">Loan / Bank EMI</option>
+                <option value="Product Purchases">Product Purchases</option>
+                <option value="Utilities">Internet / Water / Utilities</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pay-mode"><i class="fa-solid fa-wallet"></i> Mode of Payment *</label>
+              <select id="pay-mode" class="form-control" required>
+                <option value="direct_cash">1. Direct Cash</option>
+                <option value="credit_debit_card">2. Credit Card / Debit Card</option>
+                <option value="loan_emi">3. Loan / EMI</option>
+                <option value="credit_card_emi">4. Credit Card EMI</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Amount & Due Date -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="pay-amount"><i class="fa-solid fa-dollar-sign"></i> Amount Due *</label>
+              <input type="number" id="pay-amount" class="form-control" step="0.01" placeholder="e.g. 1200.00" required>
+            </div>
+
+            <div class="form-group">
+              <label for="pay-due-date"><i class="fa-regular fa-calendar-check"></i> Due Date (DD/MM/YYYY) *</label>
+              <input type="text" id="pay-due-date" class="form-control" placeholder="DD/MM/YYYY (e.g. 05/11/2026)" required>
+            </div>
+          </div>
+
+          <!-- Frequency & EMI Checkbox -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="pay-frequency"><i class="fa-solid fa-repeat"></i> Billing Frequency</label>
+              <select id="pay-frequency" class="form-control">
+                <option value="Monthly">Monthly</option>
+                <option value="One-Time">One-Time Payment</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Yearly">Yearly</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="justify-content: center; margin-top: 22px;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="pay-is-emi" style="width: 16px; height: 16px; accent-color: var(--primary);">
+                <span>Is this an EMI (Installment)?</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- EMI Specific Fields (hidden by default) -->
+          <div class="form-row-3" id="emi-specific-fields" style="display: none; background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: var(--radius-sm); border: 1px dashed var(--border-medium);">
+            <div class="form-group">
+              <label for="pay-current-inst">Current Installment</label>
+              <input type="number" id="pay-current-inst" class="form-control" placeholder="e.g. 4" min="1" value="1">
+            </div>
+
+            <div class="form-group">
+              <label for="pay-total-tenure">Total Tenure (Months)</label>
+              <input type="number" id="pay-total-tenure" class="form-control" placeholder="e.g. 12" min="1" value="12">
+            </div>
+
+            <div class="form-group">
+              <label for="pay-total-amt">Total Loan/Cost</label>
+              <input type="number" id="pay-total-amt" class="form-control" step="0.01" placeholder="e.g. 1440.00">
+            </div>
+          </div>
+
+          <!-- Late Fee Policy Warning (Decreases Late Fees) -->
+          <div class="form-group">
+            <label for="pay-late-fee-note"><i class="fa-solid fa-triangle-exclamation" style="color: #fb923c;"></i> Late Fee Penalty Policy</label>
+            <input type="text" id="pay-late-fee-note" class="form-control" placeholder="e.g. $50 late fee if paid after the 5th, 2% interest penalty">
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group">
+            <label for="pay-notes"><i class="fa-regular fa-comment-dots"></i> Payment Reference / Account Number</label>
+            <input type="text" id="pay-notes" class="form-control" placeholder="e.g. Account #8819203, Electricity Consumer #44192">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btn-cancel-payment">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-check"></i> Add Payment / EMI
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 3: High-Resolution Bill Receipt Viewer
+       ==================================================================== -->
+  <div class="modal-backdrop image-viewer-modal" id="bill-viewer-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="viewer-title"><i class="fa-solid fa-receipt"></i> Bill Photo Receipt</h3>
+        <button class="btn-close-modal" id="btn-close-viewer">&times;</button>
+      </div>
+      <div class="image-viewer-body">
+        <img id="viewer-img" src="" alt="Full Bill Receipt">
+      </div>
+      <div class="image-viewer-toolbar">
+        <div id="viewer-meta" style="font-size: 12px; color: var(--text-secondary); display: flex; gap: 12px; align-items: center; flex-wrap: wrap;"></div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn-secondary" onclick="printReceipt()" title="Print receipt copy">
+            <i class="fa-solid fa-print"></i> Print
+          </button>
+          <button class="btn-primary" onclick="document.getElementById('bill-viewer-modal').classList.remove('open')">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 4: Notifications & Early Alerts Center
+       ==================================================================== -->
+  <div class="modal-backdrop" id="notifications-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-bell" style="color: #fbbf24;"></i> Early Expiries &amp; Late Fee Reminders</h3>
+        <button class="btn-close-modal" id="btn-close-notif-modal">&times;</button>
+      </div>
+      <div class="modal-body" id="notifications-list" style="max-height: 480px; overflow-y: auto;">
+        <!-- Filled dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="document.getElementById('notifications-modal').classList.remove('open')">
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 5: Financial & Standard Arithmetic Calculator
+       ==================================================================== -->
+  <div class="modal-backdrop" id="calculator-modal">
+    <div class="modal-box calc-modal-box">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-calculator" style="color: #60a5fa;"></i> Financial &amp; Standard Calculator</h3>
+        <button class="btn-close-modal" id="btn-close-calc-modal">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 16px 20px;">
+        <!-- Dual Tab Switcher: Standard vs EMI -->
+        <div class="calc-tabs-bar">
+          <button type="button" class="calc-tab-btn active" data-calc-tab="standard">
+            <i class="fa-solid fa-calculator"></i> Standard Math
+          </button>
+          <button type="button" class="calc-tab-btn" data-calc-tab="emi">
+            <i class="fa-solid fa-chart-pie"></i> EMI &amp; Loan Amortization
+          </button>
+        </div>
+
+        <!-- VIEW 1: Standard Math Calculator -->
+        <div class="calc-view-panel" id="calc-view-standard">
+          <!-- Digital Display Screen -->
+          <div class="calc-display">
+            <div class="calc-expression" id="calc-expression"></div>
+            <div class="calc-current-val" id="calc-current-val">0</div>
+          </div>
+
+          <!-- Keypad Grid -->
+          <div class="calc-keypad-grid" id="calc-keypad">
+            <!-- Row 1 -->
+            <button type="button" class="calc-btn fn" data-action="clear">AC</button>
+            <button type="button" class="calc-btn fn" data-action="backspace"><i class="fa-solid fa-delete-left"></i></button>
+            <button type="button" class="calc-btn fn" data-action="percent">%</button>
+            <button type="button" class="calc-btn op" data-action="divide">÷</button>
+
+            <!-- Row 2 -->
+            <button type="button" class="calc-btn" data-val="7">7</button>
+            <button type="button" class="calc-btn" data-val="8">8</button>
+            <button type="button" class="calc-btn" data-val="9">9</button>
+            <button type="button" class="calc-btn op" data-action="multiply">×</button>
+
+            <!-- Row 3 -->
+            <button type="button" class="calc-btn" data-val="4">4</button>
+            <button type="button" class="calc-btn" data-val="5">5</button>
+            <button type="button" class="calc-btn" data-val="6">6</button>
+            <button type="button" class="calc-btn op" data-action="subtract">−</button>
+
+            <!-- Row 4 -->
+            <button type="button" class="calc-btn" data-val="1">1</button>
+            <button type="button" class="calc-btn" data-val="2">2</button>
+            <button type="button" class="calc-btn" data-val="3">3</button>
+            <button type="button" class="calc-btn op" data-action="add">+</button>
+
+            <!-- Row 5 -->
+            <button type="button" class="calc-btn fn" data-action="toggle-sign">±</button>
+            <button type="button" class="calc-btn" data-val="0">0</button>
+            <button type="button" class="calc-btn" data-val=".">.</button>
+            <button type="button" class="calc-btn equals" data-action="equals">=</button>
+          </div>
+
+          <!-- Calculation History Strip -->
+          <div class="calc-history-strip">
+            <div class="calc-history-title">Recent Calculations (Click to recall)</div>
+            <div class="calc-history-list" id="calc-history-list">
+              <span class="history-empty">No calculations yet</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 2: EMI & Loan Amortization Calculator -->
+        <div class="calc-view-panel" id="calc-view-emi" style="display: none;">
+          <div class="emi-panel-form">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="emi-principal"><i class="fa-solid fa-dollar-sign"></i> Principal Amount</label>
+                <input type="number" id="emi-principal" class="form-control" placeholder="1000" value="1200" min="0" step="any">
+              </div>
+              <div class="form-group">
+                <label for="emi-down-payment"><i class="fa-solid fa-hand-holding-dollar"></i> Down Payment</label>
+                <input type="number" id="emi-down-payment" class="form-control" placeholder="0" value="0" min="0" step="any">
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="emi-rate"><i class="fa-solid fa-percent"></i> Interest Rate (% APR)</label>
+                <input type="number" id="emi-rate" class="form-control" placeholder="0 for No-Cost EMI" value="12" min="0" max="100" step="0.1">
+              </div>
+              <div class="form-group">
+                <label for="emi-tenure"><i class="fa-solid fa-calendar"></i> Repayment Tenure</label>
+                <div style="display: flex; gap: 6px;">
+                  <input type="number" id="emi-tenure" class="form-control" value="12" min="1" max="360" style="flex: 2;">
+                  <select id="emi-tenure-unit" class="form-control" style="flex: 3;">
+                    <option value="months">Months</option>
+                    <option value="years">Years</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preset Tenure Pills -->
+            <div>
+              <label style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Quick Tenure Presets</label>
+              <div class="tenure-pills-row">
+                <button type="button" class="tenure-pill" data-months="3">3 Months</button>
+                <button type="button" class="tenure-pill" data-months="6">6 Months</button>
+                <button type="button" class="tenure-pill active" data-months="12">12 Months (1 Yr)</button>
+                <button type="button" class="tenure-pill" data-months="24">24 Months (2 Yrs)</button>
+                <button type="button" class="tenure-pill" data-months="36">36 Months (3 Yrs)</button>
+              </div>
+            </div>
+
+            <!-- Computed Breakdown Results -->
+            <div class="emi-results-card">
+              <div class="emi-monthly-highlight">
+                <div>
+                  <small style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block;">Calculated Monthly EMI</small>
+                  <span class="emi-monthly-val" id="emi-result-monthly">$106.62</span>
+                </div>
+                <div style="text-align: right;">
+                  <span class="warranty-status-badge safe" id="emi-result-interest-pct">6% of total</span>
+                </div>
+              </div>
+
+              <div class="emi-metrics-grid">
+                <div class="emi-metric-box">
+                  <small>Financed Principal</small>
+                  <span id="emi-result-principal">$1,200.00</span>
+                </div>
+                <div class="emi-metric-box">
+                  <small>Total Interest</small>
+                  <span id="emi-result-interest" style="color: #fbbf24;">$79.43</span>
+                </div>
+                <div class="emi-metric-box" style="grid-column: span 2;">
+                  <small>Total Repayment Obligation (Principal + Interest)</small>
+                  <span id="emi-result-total" style="color: #f8fafc; font-size: 13px;">$1,279.43</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-transfer-emi" id="btn-transfer-emi-to-payment">
+              <i class="fa-solid fa-arrow-right-to-bracket"></i> Record this EMI into Payments &amp; Schedules
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="js/storage.js?v=3.1"></script>
+  <script src="js/utils.js?v=3.1"></script>
+  <script src="js/warranty.js?v=3.1"></script>
+  <script src="js/payments.js?v=3.1"></script>
+  <script src="js/calculator.js?v=3.1"></script>
+  <script src="js/app.js?v=3.1"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "warrier-warranty-payment-tracker",
+  "version": "1.0.0",
+  "description": "Smart Warranty Bill Guardian and Payment Mode / EMI Tracker",
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "start": "npx serve -l 3000 ."
+  },
+  "keywords": ["warranty", "bill-tracker", "emi-manager", "due-date-reminder"],
+  "author": "Warrier App",
+  "license": "MIT"
+}
