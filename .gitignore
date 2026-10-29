@@ -1,0 +1,21 @@
+# dependencies
+node_modules
+warrier-web/node_modules
+.pnp
+.pnp.js
+
+# next.js
+warrier-web/.next/
+out/
+
+# local env files
+.env*.local
+warrier-web/.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+

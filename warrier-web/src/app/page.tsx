@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useEffect } from 'react';
 import {
   Shield,
@@ -40,7 +42,7 @@ const INITIAL_WARRANTIES: Warranty[] = [
     category: 'Computers & Laptops',
     notes: 'Registered with AppleCare. Receipt #MH100456.',
     bill_photo_url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80',
-    created_at: new Date().toISOString()
+    created_at: '2026-01-15T00:00:00.000Z'
   },
   {
     id: 'demo-2',
@@ -53,7 +55,7 @@ const INITIAL_WARRANTIES: Warranty[] = [
     category: 'Audio & Wearables',
     notes: 'Serial #SN-9948271. Active warranty.',
     bill_photo_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
-    created_at: new Date().toISOString()
+    created_at: '2026-02-01T00:00:00.000Z'
   }
 ];
 
@@ -103,7 +105,7 @@ export default function WarrierApp() {
   const [formData, setFormData] = useState({
     productName: '',
     storeName: '',
-    purchaseDate: new Date().toISOString().split('T')[0],
+    purchaseDate: '2026-01-15',
     warrantyValue: 12,
     warrantyUnit: 'months' as 'months' | 'years',
     price: 0,
@@ -116,8 +118,13 @@ export default function WarrierApp() {
   const [calcRate, setCalcRate] = useState<number>(14);
   const [calcTenure, setCalcTenure] = useState<number>(12);
 
-  // Check Supabase Auth session on mount
+  // Check Supabase Auth session on mount & set client dates
   useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      purchaseDate: new Date().toISOString().split('T')[0]
+    }));
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -265,7 +272,7 @@ export default function WarrierApp() {
     setFormData({
       productName: '',
       storeName: '',
-      purchaseDate: new Date().toISOString().split('T')[0],
+      purchaseDate: '2026-01-15',
       warrantyValue: 12,
       warrantyUnit: 'months',
       price: 0,
