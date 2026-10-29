@@ -80,7 +80,7 @@ const INITIAL_PAYMENTS: PaymentItem[] = [
   }
 ];
 
-export default function WarrierApp() {
+function WarrierAppContent() {
   // Navigation & User State
   const [activeTab, setActiveTab] = useState<'warranties' | 'payments' | 'calculator'>('warranties');
   const [user, setUser] = useState<any>(null);
@@ -96,6 +96,7 @@ export default function WarrierApp() {
   const [isAiScanning, setIsAiScanning] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [scanMessage, setScanMessage] = useState<string>('');
+  const [clientNow, setClientNow] = useState<number>(0);
 
   // Add Warranty Form State
   const [billFile, setBillFile] = useState<File | null>(null);
@@ -118,9 +119,11 @@ export default function WarrierApp() {
 
   // Check Supabase Auth session on mount & set client dates
   useEffect(() => {
+    const now = new Date();
+    setClientNow(now.getTime());
     setFormData(prev => ({
       ...prev,
-      purchaseDate: new Date().toISOString().split('T')[0]
+      purchaseDate: now.toISOString().split('T')[0]
     }));
 
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -279,9 +282,9 @@ export default function WarrierApp() {
     });
   }
 
-  // Helper: Calculate Expiry Date & Remaining Days
+  // Helper: Calculate Expiry Date & Remaining Days (SSR & Turbopack Safe)
   function calculateExpiry(purchaseDateStr: string, value: number, unit: 'months' | 'years') {
-    const pDate = new Date(purchaseDateStr);
+    const pDate = new Date(purchaseDateStr || '2026-01-01');
     const expDate = new Date(pDate);
     if (unit === 'years') {
       expDate.setFullYear(expDate.getFullYear() + value);
@@ -289,8 +292,9 @@ export default function WarrierApp() {
       expDate.setMonth(expDate.getMonth() + value);
     }
 
-    const today = new Date();
-    const diffTime = expDate.getTime() - today.getTime();
+    // Use clientNow set in useEffect, or deterministic fallback during build prerender
+    const currentTimestamp = clientNow || 1761696000000;
+    const diffTime = expDate.getTime() - currentTimestamp;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     return {
@@ -1062,5 +1066,13 @@ export default function WarrierApp() {
         </p>
       </footer>
     </div>
+  );
+}
+
+export default function WarrierApp() {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen bg-[#080c14]" />}>
+      <WarrierAppContent />
+    </React.Suspense>
   );
 }
